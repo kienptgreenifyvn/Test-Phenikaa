@@ -3,11 +3,16 @@ const mapRoute = express.Router();
 const { UserRole } = require('../constants/enum');
 const mapController = require('../controllers/map');
 const { requireLogin, checkPermissions } = require('../middleware/permission');
+const { validationCreateMap, validationUpdateMap } = require('../middleware/validationMap');
 
-mapRoute.post('/', mapController.createMap);
+mapRoute.post('/', requireLogin, checkPermissions(UserRole.ADMIN), validationCreateMap, mapController.createMap);
+
 mapRoute.get('/:_id', mapController.getMapById);
+
 mapRoute.get('/', mapController.getAllMap);
-mapRoute.put('/:_id', mapController.updateMap);
-mapRoute.delete('/:_id', mapController.deletMap);
+
+mapRoute.put('/:_id', requireLogin, checkPermissions(UserRole.ADMIN), validationUpdateMap, mapController.updateMap);
+
+mapRoute.delete('/:_id', requireLogin, checkPermissions(UserRole.ADMIN), mapController.deletMap);
 
 module.exports = mapRoute;

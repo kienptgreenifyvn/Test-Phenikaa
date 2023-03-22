@@ -4,8 +4,9 @@ const mapSchema = mongoose.Schema(
   {
     title: {
       type: String,
-      unique: true,
       required: true,
+      index: true,
+      unique: true,
     },
     description: {
       type: String,

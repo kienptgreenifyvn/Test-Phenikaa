@@ -4,10 +4,28 @@ const { UserRole } = require('../constants/enum');
 const locationController = require('../controllers/location');
 const { requireLogin, checkPermissions } = require('../middleware/permission');
 
-locationRoute.post('/', requireLogin, checkPermissions(UserRole.ADMIN), locationController.createLocation);
+const { validationCreateLocation, validationUpdateLocation } = require('../middleware/validationLocation');
+
+locationRoute.post(
+  '/',
+  requireLogin,
+  checkPermissions(UserRole.ADMIN),
+  validationCreateLocation,
+  locationController.createLocation
+);
+
 locationRoute.get('/:_id', locationController.getLocationById);
+
 locationRoute.get('/', locationController.getAllLocation);
-locationRoute.put('/:_id', requireLogin, checkPermissions(UserRole.ADMIN), locationController.updateLocation);
+
+locationRoute.put(
+  '/:_id',
+  requireLogin,
+  checkPermissions(UserRole.ADMIN),
+  validationUpdateLocation,
+  locationController.updateLocation
+);
+
 locationRoute.delete('/:_id', requireLogin, checkPermissions(UserRole.ADMIN), locationController.deletLocation);
 
 module.exports = locationRoute;

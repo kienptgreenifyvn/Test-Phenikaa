@@ -41,6 +41,9 @@ module.exports.MAP_NOT_FOUND = 'Map not found';
 module.exports.MAP_UPDATE_SUCCESSFULLY = 'Map update successfully';
 module.exports.MAP_DELETE_SUCCESSFULLY = 'Map delete successfully';
 module.exports.MAP_ALREADY_HAS_A_LOCATION_CHARGING = 'Map already has a location charging';
+module.exports.MAP_TITLE_ALREADY_EXISTS = 'Map title already exists';
+module.exports.MAP_CERTER_NOT_EMPTY = 'Map title not empty';
+module.exports.MAP_PRICE_MUST_BE_NUMBER = 'Map price must be number';
 //#endregion Map
 
 //#region Location
@@ -48,4 +51,5 @@ module.exports.LOCATION_CREATE_SUCCESSFULLY = 'Location create successfully';
 module.exports.LOCATION_NOT_FOUND = 'Location not found';
 module.exports.LOCATION_UPDATE_SUCCESSFULLY = 'Location update successfully';
 module.exports.LOCATION_DELETE_SUCCESSFULLY = 'Location delete successfully';
+module.exports.LOCATION_CERTER_NOT_EMPTY = 'Location lat long alt not empty';
 //#endregion Location
