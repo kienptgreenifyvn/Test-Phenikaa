@@ -14,7 +14,7 @@ const createMap = async (req, res) => {
     if (location) {
       logger.info(`[createMap]: newMap -> ${JSON.stringify(location)}`);
       let count = 0;
-      for (const l of location) {
+      for (const l of uniqueLocation(location)) {
         const typeLocation = await locationService.getLocationById(l);
         if (typeLocation?.type === typeEnum.typeLocation.CHARGING) {
           count++;
