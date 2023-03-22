@@ -11,8 +11,8 @@ const mapSchema = mongoose.Schema(
       type: String,
     },
     center: {
-      lat: String,
-      long: String,
+      lat: Number,
+      long: Number,
     },
     contact: {
       phone: String,
@@ -24,7 +24,6 @@ const mapSchema = mongoose.Schema(
     price: {
       type: Number,
     },
-    location: [{ type: mongoose.Schema.Types.ObjectId, ref: 'locations', index: true }],
   },
   { timestamps: true }
 );

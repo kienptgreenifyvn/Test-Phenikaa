@@ -11,53 +11,13 @@ const createMap = async (map) => {
 };
 
 const getMapById = async (_id) => {
-  return await Map.aggregate([
-    {
-      $match: { _id: new mongoose.Types.ObjectId(_id) },
-    },
-    {
-      $lookup: {
-        from: 'locations',
-        as: 'locations',
-        let: {
-          location: '$location',
-        },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $in: ['$_id', '$$location'],
-              },
-            },
-          },
-        ],
-      },
-    },
-  ]).then((data) => data[0] || null);
+  return await Map.findById(_id);
 };
 
 const getAllMap = async (query, search, pagination) => {
   const pipeline = [
     {
       $match: { ...query },
-    },
-    {
-      $lookup: {
-        from: 'locations',
-        as: 'locations',
-        let: {
-          location: '$location',
-        },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $in: ['$_id', '$$location'],
-              },
-            },
-          },
-        ],
-      },
     },
   ];
   if (search) {

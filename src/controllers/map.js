@@ -8,25 +8,8 @@ const typeEnum = require('../constants/enum');
 
 const createMap = async (req, res) => {
   try {
-    const { title, description, center, contact, openingTime, price, location } = req.body;
+    const { title, description, center, contact, openingTime, price } = req.body;
     logger.info(`[createMap]: req -> ${JSON.stringify(req.body)}`);
-
-    if (location) {
-      logger.info(`[createMap]: newMap -> ${JSON.stringify(location)}`);
-      let count = 0;
-      for (const l of uniqueLocation(location)) {
-        const typeLocation = await locationService.getLocationById(l);
-        if (typeLocation?.type === typeEnum.typeLocation.CHARGING) {
-          count++;
-        }
-        if (count > 1) {
-          return res.status(httpResponses.HTTP_STATUS_OK).json({
-            success: true,
-            message: `${httpResponses.MAP_ALREADY_HAS_A_LOCATION_CHARGING}`,
-          });
-        }
-      }
-    }
 
     const newMap = {
       title,
@@ -35,15 +18,11 @@ const createMap = async (req, res) => {
       contact: contact,
       openingTime,
       price,
-      location: uniqueLocation(location),
     };
     logger.info(`[createMap]: newMap -> ${JSON.stringify(newMap)}`);
 
     const map = await mapService.createMap(newMap);
     logger.info(`[createMap]: createMap -> ${httpResponses.SUCCESS}`);
-
-    await locationService.updateManyMapIdForLocation({ _id: { $in: location } }, map._id);
-    logger.info(`[createMap]: updateManyMapIdForLocation -> ${httpResponses.SUCCESS}`);
 
     return res.status(httpResponses.HTTP_STATUS_OK).json({
       success: true,

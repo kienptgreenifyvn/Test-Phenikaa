@@ -11,21 +11,10 @@ const createLocation = async (req, res) => {
     const { title, description, lat, long, alt, map, images, type, center } = req.body;
     logger.info(`[createLocation]: req -> ${JSON.stringify(req.body)}`);
 
-    if (map && type === typeEnum.typeLocation.CHARGING) {
-      const data = await mapService.getMapById(map);
-      if (!data) {
-        logger.debug(`[createLocation]: getMapById -> ${httpResponses.MAP_NOT_FOUND}`);
-        return res.notFound(httpResponses.MAP_NOT_FOUND);
-      }
-      if (data) {
-        for (const l of data?.location) {
-          const typeLocation = await locationService.getLocationById(l);
-          if (typeLocation?.type === typeEnum.typeLocation.CHARGING) {
-            logger.debug(`[createLocation]: getLocationById -> ${httpResponses.MAP_ALREADY_HAS_A_LOCATION_CHARGING}`);
-            return res.badRequest(httpResponses.MAP_ALREADY_HAS_A_LOCATION_CHARGING);
-          }
-        }
-      }
+    const data = await mapService.getMapById(map);
+    if (!data) {
+      logger.debug(`[createLocation]: getMapById -> ${httpResponses.MAP_NOT_FOUND}`);
+      return res.notFound(httpResponses.MAP_NOT_FOUND);
     }
 
     const newLocation = {
@@ -44,9 +33,6 @@ const createLocation = async (req, res) => {
     logger.info(`[createLocation]: location -> ${httpResponses.SUCCESS}`);
 
     if (map) {
-      await mapService.updateLocationForMap(map, location._id);
-      logger.info(`[createLocation]: updateLocationForMap -> ${httpResponses.SUCCESS}`);
-
       await mapService.updateMap({ _id: map }, { center });
       logger.info(`[createLocation]: updateMap -> ${httpResponses.SUCCESS}`);
     }
@@ -165,9 +151,6 @@ const deletLocation = async (req, res) => {
     logger.info(`[deletLocation]: deleteLocationById -> ${JSON.stringify(deletLocation)}`);
 
     if (deletLocation.map) {
-      await mapService.deleteLocationForMap(deletLocation?.map, _id);
-      logger.info(`[deletLocation]: deleteLocationForMap -> ${httpResponses.SUCCESS}`);
-
       await mapService.updateMap({ _id: deletLocation?.map }, { center });
       logger.info(`[createLocation]: mapService -> ${httpResponses.SUCCESS}`);
     }

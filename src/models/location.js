@@ -6,18 +6,19 @@ const localionchema = mongoose.Schema(
       type: String,
       unique: true,
       required: true,
+      index: true,
     },
     description: {
       type: String,
     },
     lat: {
-      type: String,
+      type: Number,
     },
     long: {
-      type: String,
+      type: Number,
     },
     alt: {
-      type: String,
+      type: Number,
     },
     map: {
       type: mongoose.Schema.Types.ObjectId,
