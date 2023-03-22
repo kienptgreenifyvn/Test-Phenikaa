@@ -50,12 +50,22 @@ const deleteMapById = async (_id) => {
   return await Map.findByIdAndDelete(_id);
 };
 
-const updateLocationForMap = async (map, locationId) => {
-  return await Map.updateOne({ _id: new mongoose.Types.ObjectId(map) }, { $push: { location: locationId } });
-};
-
-const deleteLocationForMap = async (map, locationId) => {
-  return await Map.updateOne({ _id: new mongoose.Types.ObjectId(map) }, { $pull: { location: locationId } });
+const getLocationForMap = async (map) => {
+  return await Map.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(map),
+      },
+    },
+    {
+      $lookup: {
+        from: 'locations',
+        localField: '_id',
+        foreignField: 'map',
+        as: 'locations',
+      },
+    },
+  ]).then((data) => data[0] || null);
 };
 
 module.exports = {
@@ -65,6 +75,5 @@ module.exports = {
   getAllMap,
   updateMap,
   deleteMapById,
-  updateLocationForMap,
-  deleteLocationForMap,
+  getLocationForMap,
 };

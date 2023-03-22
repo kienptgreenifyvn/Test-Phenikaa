@@ -24,12 +24,13 @@ const createUser = async (req, res) => {
       password: hashPassword,
       role,
     };
-    await userService.createUser(newUser);
+    const user = await userService.createUser(newUser);
     logger.debug(`[createUser]: user -> ${httpResponses.SUCCESS}`);
 
     return res.status(httpResponses.HTTP_STATUS_OK).json({
       success: true,
       message: `${httpResponses.USER_CREATE_SUCCESSFULLY}`,
+      user: user,
     });
   } catch (error) {
     logger.error(`[createUser]: error -> ${error.message}`);
