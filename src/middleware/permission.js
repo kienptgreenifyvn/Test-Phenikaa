@@ -35,7 +35,7 @@ const checkPermissions = (...roles) => {
       }
       logger.debug(`[checkPermissions]: error -> ${httpResponses.PERMISSION_DENIED}`);
       return res
-        .status(httpResponses.HTTP_STATUS_UNAUTHORIZED)
+        .status(httpResponses.HTTP_STATUS_NOT_ALLOWED)
         .json({ success: false, message: `Error: ${httpResponses.PERMISSION_DENIED}` });
     } catch (err) {
       logger.error(`[checkPermissions]: error -> ${err.message}`);
