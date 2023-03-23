@@ -6,14 +6,9 @@ const server = http.Server(app);
 const { Server } = require('socket.io');
 var io = new Server(server);
 const path = require('path');
-
-global.io = io;
-
 const packageInfo = require('../package.json');
 
-// app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname) + '/index.html');
-// });
+global.io = io;
 
 server.listen(process.env.SERVER_PORT_PROD, (error) => {
   if (error) {
