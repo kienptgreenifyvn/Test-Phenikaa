@@ -118,11 +118,11 @@ const updateMap = async (req, res) => {
 const deleteMap = async (req, res) => {
   try {
     const { _id } = req.params;
-    logger.debug(`[deletMap] params -> ${_id}`);
+    logger.debug(`[deleteMap] params -> ${_id}`);
 
     const getMapById = await mapService.getMapById(_id);
     if (!getMapById) {
-      logger.debug(`[deletMap]: getMapById -> ${httpResponses.MAP_NOT_FOUND}`);
+      logger.debug(`[deleteMap]: getMapById -> ${httpResponses.MAP_NOT_FOUND}`);
       return res.notFound(httpResponses.MAP_NOT_FOUND);
     }
 

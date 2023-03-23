@@ -140,37 +140,37 @@ const updateLocation = async (req, res) => {
   }
 };
 
-const deletLocation = async (req, res) => {
+const deleteLocation = async (req, res) => {
   try {
     const { _id } = req.params;
-    logger.debug(`[deletLocation] params -> ${_id}`);
+    logger.debug(`[deleteLocation] params -> ${_id}`);
 
     const getLocationById = await locationService.getLocationById(_id);
     if (!getLocationById) {
-      logger.debug(`[deletLocation]: getLocationById -> ${httpResponses.LOCATION_NOT_FOUND}`);
+      logger.debug(`[deleteLocation]: getLocationById -> ${httpResponses.LOCATION_NOT_FOUND}`);
       return res.notFound(httpResponses.LOCATION_NOT_FOUND);
     }
-    logger.info(`[deletLocation]: getLocationById -> ${httpResponses.SUCCESS}`);
+    logger.info(`[deleteLocation]: getLocationById -> ${httpResponses.SUCCESS}`);
 
-    const deletLocation = await locationService.deleteLocationById(_id);
-    logger.info(`[deletLocation]: deleteLocationById -> ${JSON.stringify(deletLocation)}`);
+    const deleteLocation = await locationService.deleteLocationById(_id);
+    logger.info(`[deleteLocation]: deleteLocationById -> ${JSON.stringify(deleteLocation)}`);
 
-    if (deletLocation.map) {
-      await mapService.deleteLocationForMap(deletLocation?.map, _id);
-      logger.info(`[deletLocation]: deleteLocationForMap -> ${httpResponses.SUCCESS}`);
+    if (deleteLocation.map) {
+      await mapService.deleteLocationForMap(deleteLocation?.map, _id);
+      logger.info(`[deleteLocation]: deleteLocationForMap -> ${httpResponses.SUCCESS}`);
 
-      const data = await mapService.getLocationForMap(deletLocation?.map);
+      const data = await mapService.getLocationForMap(deleteLocation?.map);
       logger.info(`[createLocation]: getLocationForMap -> ${httpResponses.SUCCESS}`);
 
-      await mapService.updateMap({ _id: deletLocation?.map }, { center: helper.averageGeolocation(data?.locations) });
+      await mapService.updateMap({ _id: deleteLocation?.map }, { center: helper.averageGeolocation(data?.locations) });
       logger.info(`[createLocation]: mapService -> ${httpResponses.SUCCESS}`);
     }
-    io.emit('deletLocation', deletLocation);
+    io.emit('deleteLocation', deleteLocation);
     return res.ok(httpResponses.LOCATION_DELETE_SUCCESSFULLY);
   } catch (error) {
-    logger.error(`[deletLocation] error -> ${error.message}`);
+    logger.error(`[deleteLocation] error -> ${error.message}`);
     return res.internalServer(error.message);
   }
 };
 
-module.exports = { createLocation, getLocationById, getAllLocation, updateLocation, deletLocation };
+module.exports = { createLocation, getLocationById, getAllLocation, updateLocation, deleteLocation };

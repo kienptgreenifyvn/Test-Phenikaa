@@ -26,6 +26,6 @@ locationRoute.put(
   locationController.updateLocation
 );
 
-locationRoute.delete('/:_id', requireLogin, checkPermissions(UserRole.ADMIN), locationController.deletLocation);
+locationRoute.delete('/:_id', requireLogin, checkPermissions(UserRole.ADMIN), locationController.deleteLocation);
 
 module.exports = locationRoute;
