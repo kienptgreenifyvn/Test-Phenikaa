@@ -23,6 +23,7 @@ const createMap = async (req, res) => {
     const map = await mapService.createMap(newMap);
     logger.info(`[createMap]: createMap -> ${httpResponses.SUCCESS}`);
 
+    io.emit('createMap', map);
     return res.status(httpResponses.HTTP_STATUS_OK).json({
       success: true,
       message: `${httpResponses.MAP_CREATE_SUCCESSFULLY}`,
@@ -103,9 +104,10 @@ const updateMap = async (req, res) => {
       return res.notFound(httpResponses.MAP_NOT_FOUND);
     }
 
-    await mapService.updateMap(_id, update);
+    const updateMap = await mapService.updateMap(_id, update);
     logger.info(`[updateMap]: updateMap -> ${httpResponses.SUCCESS}`);
 
+    io.emit('updateMap', updateMap);
     return res.ok(httpResponses.MAP_UPDATE_SUCCESSFULLY);
   } catch (error) {
     logger.error(`[updateMap] error -> ${error.message}`);
@@ -130,6 +132,7 @@ const deletMap = async (req, res) => {
     await locationService.deleteManyLocation(deleteMap._id);
     logger.info(`[deleteMap]: deleteManyLocation -> ${httpResponses.SUCCESS}`);
 
+    io.emit('deleteMap', deleteMap);
     return res.ok(httpResponses.MAP_DELETE_SUCCESSFULLY);
   } catch (error) {
     logger.error(`[deletMap] error -> ${error.message}`);

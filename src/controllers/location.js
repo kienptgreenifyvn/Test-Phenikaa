@@ -37,6 +37,8 @@ const createLocation = async (req, res) => {
       await mapService.updateMap({ _id: map }, { center: helper.averageGeolocation(data.locations) });
       logger.info(`[createLocation]: updateMap -> ${httpResponses.SUCCESS}`);
     }
+
+    io.emit('createLocation', location);
     return res.status(httpResponses.HTTP_STATUS_OK).json({
       success: true,
       message: `${httpResponses.LOCATION_CREATE_SUCCESSFULLY}`,
@@ -124,14 +126,13 @@ const updateLocation = async (req, res) => {
     logger.info(`[updateLocation]: updateLocation -> ${httpResponses.SUCCESS}`);
 
     if (location?.map && (update.lat || update.long)) {
-      console.log('kien');
       const data = await mapService.getLocationForMap(location?.map);
       logger.info(`[createLocation]: getLocationForMap -> ${httpResponses.SUCCESS}`);
 
       await mapService.updateMap({ _id: location?.map }, { center: helper.averageGeolocation(data?.locations) });
       logger.info(`[createLocation]: updateMap -> ${httpResponses.SUCCESS}`);
     }
-
+    io.emit('updateLocation', location);
     return res.ok(httpResponses.LOCATION_UPDATE_SUCCESSFULLY);
   } catch (error) {
     logger.error(`[updateLocation] error -> ${error.message}`);
@@ -164,7 +165,7 @@ const deletLocation = async (req, res) => {
       await mapService.updateMap({ _id: deletLocation?.map }, { center: helper.averageGeolocation(data?.locations) });
       logger.info(`[createLocation]: mapService -> ${httpResponses.SUCCESS}`);
     }
-
+    io.emit('deletLocation', deletLocation);
     return res.ok(httpResponses.LOCATION_DELETE_SUCCESSFULLY);
   } catch (error) {
     logger.error(`[deletLocation] error -> ${error.message}`);
