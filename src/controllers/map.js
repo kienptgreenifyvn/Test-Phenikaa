@@ -8,13 +8,12 @@ const typeEnum = require('../constants/enum');
 
 const createMap = async (req, res) => {
   try {
-    const { title, description, center, contact, openingTime, price } = req.body;
+    const { title, description, contact, openingTime, price } = req.body;
     logger.info(`[createMap]: req -> ${JSON.stringify(req.body)}`);
 
     const newMap = {
       title,
       description,
-      center: center,
       contact: contact,
       openingTime,
       price,

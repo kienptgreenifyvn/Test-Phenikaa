@@ -17,8 +17,8 @@ const validationCreateLocation = async (req, res, next) => {
 
     const existedTitle = await locationService.findLocation({ title: title });
     if (existedTitle) {
-      logger.debug(`[validationCreateLocation]: title -> ${httpResponses.MAP_TITLE_ALREADY_EXISTS}`);
-      return res.badRequest(httpResponses.MAP_TITLE_ALREADY_EXISTS);
+      logger.debug(`[validationCreateLocation]: title -> ${httpResponses.LOCATION_TITLE_ALREADY_EXISTS}`);
+      return res.badRequest(httpResponses.LOCATION_TITLE_ALREADY_EXISTS);
     }
 
     if (map) {

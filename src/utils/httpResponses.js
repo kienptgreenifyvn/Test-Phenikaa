@@ -52,4 +52,5 @@ module.exports.LOCATION_NOT_FOUND = 'Location not found';
 module.exports.LOCATION_UPDATE_SUCCESSFULLY = 'Location update successfully';
 module.exports.LOCATION_DELETE_SUCCESSFULLY = 'Location delete successfully';
 module.exports.LOCATION_CERTER_NOT_EMPTY = 'Location lat long alt not empty';
+module.exports.LOCATION_TITLE_ALREADY_EXISTS = 'Location title already exists';
 //#endregion Location

@@ -6,6 +6,9 @@ const server = http.Server(app);
 const { Server } = require('socket.io');
 const io = new Server(server);
 const path = require('path');
+const Socket = require('./socket');
+
+Socket(io);
 
 const packageInfo = require('../package.json');
 
@@ -13,12 +16,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname) + '/index.html');
 });
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
+// io.on('connection', (socket) => {
+//   socket.on('chat message', (msg) => {
+//     io.emit('chat message', msg);
+//   });
+// });
 
 server.listen(process.env.SERVER_PORT_PROD, (error) => {
   if (error) {

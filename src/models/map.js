@@ -25,6 +25,7 @@ const mapSchema = mongoose.Schema(
     price: {
       type: Number,
     },
+    location: [{ type: mongoose.Schema.Types.ObjectId, ref: 'locations', index: true }],
   },
   { timestamps: true }
 );

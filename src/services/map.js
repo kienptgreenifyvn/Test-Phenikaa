@@ -11,13 +11,63 @@ const createMap = async (map) => {
 };
 
 const getMapById = async (_id) => {
-  return await Map.findById(_id);
+  return await Map.aggregate([
+    {
+      $match: { _id: new mongoose.Types.ObjectId(_id) },
+    },
+    {
+      $lookup: {
+        from: 'locations',
+        as: 'locations',
+        let: {
+          location: '$location',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $in: ['$_id', '$$location'],
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        location: 0,
+      },
+    },
+  ]).then((data) => data[0] || null);
 };
 
 const getAllMap = async (query, search, pagination) => {
   const pipeline = [
     {
       $match: { ...query },
+    },
+    {
+      $lookup: {
+        from: 'locations',
+        as: 'locations',
+        let: {
+          location: '$location',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $in: ['$_id', '$$location'],
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        location: 0,
+      },
     },
   ];
   if (search) {
@@ -63,9 +113,27 @@ const getLocationForMap = async (map) => {
         localField: '_id',
         foreignField: 'map',
         as: 'locations',
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              lat: 1,
+              long: 1,
+              type: 1,
+            },
+          },
+        ],
       },
     },
   ]).then((data) => data[0] || null);
+};
+
+const updateLocationForMap = async (map, locationId) => {
+  return await Map.updateOne({ _id: new mongoose.Types.ObjectId(map) }, { $push: { location: locationId } });
+};
+
+const deleteLocationForMap = async (map, locationId) => {
+  return await Map.updateOne({ _id: new mongoose.Types.ObjectId(map) }, { $pull: { location: locationId } });
 };
 
 module.exports = {
@@ -76,4 +144,6 @@ module.exports = {
   updateMap,
   deleteMapById,
   getLocationForMap,
+  updateLocationForMap,
+  deleteLocationForMap,
 };

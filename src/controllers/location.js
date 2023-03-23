@@ -5,29 +5,12 @@ const mapService = require('../services/map');
 const typeEnum = require('../constants/enum');
 const constants = require('../constants/constants');
 const mongoose = require('mongoose');
+const helper = require('../helper/helpFunction');
 
 const createLocation = async (req, res) => {
   try {
-    const { title, description, lat, long, alt, map, images, type, center } = req.body;
+    const { title, description, lat, long, alt, map, images, type } = req.body;
     logger.info(`[createLocation]: req -> ${JSON.stringify(req.body)}`);
-
-    // if (map) {
-    //   const data = await mapService.getLocationForMap(map);
-    //   if (!data) {
-    //     logger.debug(`[createLocation]: getLocationForMap -> ${httpResponses.MAP_NOT_FOUND}`);
-    //     return res.notFound(httpResponses.MAP_NOT_FOUND);
-    //   }
-
-    //   if (type === typeEnum.typeLocation.CHARGING) {
-    //     for (const l of data?.locations) {
-    //       const typeLocation = await locationService.getLocationById(l?._id);
-    //       if (typeLocation?.type === typeEnum.typeLocation.CHARGING) {
-    //         logger.debug(`[createLocation]: getLocationById -> ${httpResponses.MAP_ALREADY_HAS_A_LOCATION_CHARGING}`);
-    //         return res.badRequest(httpResponses.MAP_ALREADY_HAS_A_LOCATION_CHARGING);
-    //       }
-    //     }
-    //   }
-    // }
 
     const newLocation = {
       title,
@@ -45,12 +28,18 @@ const createLocation = async (req, res) => {
     logger.info(`[createLocation]: location -> ${httpResponses.SUCCESS}`);
 
     if (map) {
-      await mapService.updateMap({ _id: map }, { center });
+      const data = await mapService.getLocationForMap(map);
+      logger.info(`[createLocation]: getLocationForMap -> ${httpResponses.SUCCESS}`);
+
+      await mapService.updateLocationForMap(map, location?._id);
+      logger.info(`[createLocation]: updateLocationForMap -> ${httpResponses.SUCCESS}`);
+
+      await mapService.updateMap({ _id: map }, { center: helper.averageGeolocation(data.locations) });
       logger.info(`[createLocation]: updateMap -> ${httpResponses.SUCCESS}`);
     }
     return res.status(httpResponses.HTTP_STATUS_OK).json({
       success: true,
-      message: `${httpResponses.MAP_CREATE_SUCCESSFULLY}`,
+      message: `${httpResponses.LOCATION_CREATE_SUCCESSFULLY}`,
       data: location,
     });
   } catch (error) {
@@ -134,12 +123,16 @@ const updateLocation = async (req, res) => {
     const location = await locationService.updateLocation(_id, update);
     logger.info(`[updateLocation]: updateLocation -> ${httpResponses.SUCCESS}`);
 
-    if (location.map) {
-      await mapService.updateMap({ _id: location?.map }, { center: update?.center });
+    if (location?.map && (update.lat || update.long)) {
+      console.log('kien');
+      const data = await mapService.getLocationForMap(location?.map);
+      logger.info(`[createLocation]: getLocationForMap -> ${httpResponses.SUCCESS}`);
+
+      await mapService.updateMap({ _id: location?.map }, { center: helper.averageGeolocation(data?.locations) });
       logger.info(`[createLocation]: updateMap -> ${httpResponses.SUCCESS}`);
     }
 
-    return res.ok(httpResponses.MAP_UPDATE_SUCCESSFULLY);
+    return res.ok(httpResponses.LOCATION_UPDATE_SUCCESSFULLY);
   } catch (error) {
     logger.error(`[updateLocation] error -> ${error.message}`);
     return res.internalServer(error.message);
@@ -149,8 +142,7 @@ const updateLocation = async (req, res) => {
 const deletLocation = async (req, res) => {
   try {
     const { _id } = req.params;
-    const { center } = req.body;
-    logger.debug(`[deletLocation] params -> ${_id} - body -> ${center}`);
+    logger.debug(`[deletLocation] params -> ${_id}`);
 
     const getLocationById = await locationService.getLocationById(_id);
     if (!getLocationById) {
@@ -163,11 +155,17 @@ const deletLocation = async (req, res) => {
     logger.info(`[deletLocation]: deleteLocationById -> ${JSON.stringify(deletLocation)}`);
 
     if (deletLocation.map) {
-      await mapService.updateMap({ _id: deletLocation?.map }, { center });
+      await mapService.deleteLocationForMap(deletLocation?.map, _id);
+      logger.info(`[deletLocation]: deleteLocationForMap -> ${httpResponses.SUCCESS}`);
+
+      const data = await mapService.getLocationForMap(deletLocation?.map);
+      logger.info(`[createLocation]: getLocationForMap -> ${httpResponses.SUCCESS}`);
+
+      await mapService.updateMap({ _id: deletLocation?.map }, { center: helper.averageGeolocation(data?.locations) });
       logger.info(`[createLocation]: mapService -> ${httpResponses.SUCCESS}`);
     }
 
-    return res.ok(httpResponses.MAP_DELETE_SUCCESSFULLY);
+    return res.ok(httpResponses.LOCATION_DELETE_SUCCESSFULLY);
   } catch (error) {
     logger.error(`[deletLocation] error -> ${error.message}`);
     return res.internalServer(error.message);

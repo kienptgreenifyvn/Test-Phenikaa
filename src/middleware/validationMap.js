@@ -19,11 +19,6 @@ const validationCreateMap = async (req, res, next) => {
       return res.badRequest(httpResponses.MAP_TITLE_ALREADY_EXISTS);
     }
 
-    if (!center || !center.lat || !center.long) {
-      logger.debug(`[validationCreateMap]: certer -> ${httpResponses.MAP_CERTER_NOT_EMPTY}`);
-      return res.badRequest(httpResponses.MAP_CERTER_NOT_EMPTY);
-    }
-
     if (typeof price != 'number') {
       logger.debug(`[validationCreateMap]: price -> ${httpResponses.MAP_PRICE_MUST_BE_NUMBER}`);
       return res.badRequest(httpResponses.MAP_PRICE_MUST_BE_NUMBER);
