@@ -18,6 +18,10 @@ const getLocation = async (_id) => {
   ]).then((data) => data[0] || null);
 };
 
+const findLocation = async (filter) => {
+  return await Location.findOne(filter);
+};
+
 const createLocation = async (location) => {
   const newLocation = new Location(location);
   return await newLocation.save();
@@ -76,7 +80,6 @@ const getAllLocation = async (query, search, pagination) => {
     );
   }
   const locations = await Location.aggregate(pipeline);
-
   return { locations, total };
 };
 
@@ -89,4 +92,5 @@ module.exports = {
   deleteManyLocation,
   updateManyMapIdForLocation,
   getAllLocation,
+  findLocation,
 };

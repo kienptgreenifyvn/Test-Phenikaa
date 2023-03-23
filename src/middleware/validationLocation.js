@@ -15,7 +15,7 @@ const validationCreateLocation = async (req, res, next) => {
     const { title, lat, long, alt, map, type } = req.body;
     logger.info(`[validationCreateLocation]: req -> ${JSON.stringify(req.body)}`);
 
-    const existedTitle = await mapService.getMap({ title: title });
+    const existedTitle = await locationService.findLocation({ title: title });
     if (existedTitle) {
       logger.debug(`[validationCreateLocation]: title -> ${httpResponses.MAP_TITLE_ALREADY_EXISTS}`);
       return res.badRequest(httpResponses.MAP_TITLE_ALREADY_EXISTS);
@@ -59,7 +59,7 @@ const validationUpdateLocation = async (req, res, next) => {
     const { title } = req.body;
     logger.debug(`[validationUpdateLocation]: body -> ${JSON.stringify(req.body)}`);
 
-    const existedTitle = await mapService.getMap({ title: title });
+    const existedTitle = await locationService.findLocation({ title: title });
     if (existedTitle) {
       logger.debug(`[validationUpdateLocation]: title -> ${httpResponses.MAP_TITLE_ALREADY_EXISTS}`);
       return res.badRequest(httpResponses.MAP_TITLE_ALREADY_EXISTS);
