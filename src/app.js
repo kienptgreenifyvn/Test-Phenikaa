@@ -102,7 +102,7 @@ app.use((req, res, next) => {
 
 app.use('/api', indexRoute);
 
-app.get('/', function (req, res) {
+app.get('/phenikaa', function (req, res) {
   logger.debug('[Phenikaa] -> test');
   res.send('Phenikaa-Backend.');
 });
