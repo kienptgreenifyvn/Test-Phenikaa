@@ -115,7 +115,7 @@ const updateMap = async (req, res) => {
   }
 };
 
-const deletMap = async (req, res) => {
+const deleteMap = async (req, res) => {
   try {
     const { _id } = req.params;
     logger.debug(`[deletMap] params -> ${_id}`);
@@ -140,4 +140,4 @@ const deletMap = async (req, res) => {
   }
 };
 
-module.exports = { createMap, getMapById, getAllMap, updateMap, deletMap };
+module.exports = { createMap, getMapById, getAllMap, updateMap, deleteMap };

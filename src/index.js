@@ -4,7 +4,7 @@ const app = require('./app');
 const http = require('http');
 const server = http.Server(app);
 const { Server } = require('socket.io');
-var io = new Server(server);
+const io = new Server(server);
 const path = require('path');
 const packageInfo = require('../package.json');
 

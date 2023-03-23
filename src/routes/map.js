@@ -13,6 +13,6 @@ mapRoute.get('/', mapController.getAllMap);
 
 mapRoute.put('/:_id', requireLogin, checkPermissions(UserRole.ADMIN), validationUpdateMap, mapController.updateMap);
 
-mapRoute.delete('/:_id', requireLogin, checkPermissions(UserRole.ADMIN), mapController.deletMap);
+mapRoute.delete('/:_id', requireLogin, checkPermissions(UserRole.ADMIN), mapController.deleteMap);
 
 module.exports = mapRoute;
