@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const localionchema = mongoose.Schema(
+const locationSchema = mongoose.Schema(
   {
     title: {
       type: String,
@@ -33,4 +33,4 @@ const localionchema = mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('locations', localionchema);
+module.exports = mongoose.model('locations', locationSchema);
