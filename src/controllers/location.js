@@ -12,6 +12,32 @@ const createLocation = async (req, res) => {
     const { title, description, lat, long, alt, map, images, type } = req.body;
     logger.info(`[createLocation]: req -> ${JSON.stringify(req.body)}`);
 
+    const existedTitle = await locationService.findLocation({ title: title });
+    if (existedTitle) {
+      logger.debug(`[validationCreateLocation]: title -> ${httpResponses.LOCATION_TITLE_ALREADY_EXISTS}`);
+      return res.badRequest(httpResponses.LOCATION_TITLE_ALREADY_EXISTS);
+    }
+
+    if (map) {
+      const data = await mapService.getLocationForMap(map);
+      if (!data) {
+        logger.debug(`[validationCreateLocation]: getLocationForMap -> ${httpResponses.MAP_NOT_FOUND}`);
+        return res.notFound(httpResponses.MAP_NOT_FOUND);
+      }
+
+      if (type === typeEnum.typeLocation.CHARGING) {
+        for (const l of data?.locations) {
+          const typeLocation = await locationService.getLocationById(l?._id);
+          if (typeLocation?.type === typeEnum.typeLocation.CHARGING) {
+            logger.debug(
+              `[validationCreateLocation]: getLocationById -> ${httpResponses.MAP_ALREADY_HAS_A_LOCATION_CHARGING}`
+            );
+            return res.badRequest(httpResponses.MAP_ALREADY_HAS_A_LOCATION_CHARGING);
+          }
+        }
+      }
+    }
+
     const newLocation = {
       title,
       description,

@@ -3,14 +3,13 @@ const locationRoute = express.Router();
 const { UserRole } = require('../constants/enum');
 const locationController = require('../controllers/location');
 const { requireLogin, checkPermissions } = require('../middleware/permission');
-
-const { validationCreateLocation, validationUpdateLocation } = require('../middleware/validationLocation');
+const { addLocationValidation } = require('../validation/location.validation');
 
 locationRoute.post(
   '/',
   requireLogin,
   checkPermissions(UserRole.ADMIN),
-  validationCreateLocation,
+  addLocationValidation,
   locationController.createLocation
 );
 
@@ -18,13 +17,7 @@ locationRoute.get('/:_id', locationController.getLocationById);
 
 locationRoute.get('/', locationController.getAllLocation);
 
-locationRoute.put(
-  '/:_id',
-  requireLogin,
-  checkPermissions(UserRole.ADMIN),
-  validationUpdateLocation,
-  locationController.updateLocation
-);
+locationRoute.put('/:_id', requireLogin, checkPermissions(UserRole.ADMIN), locationController.updateLocation);
 
 locationRoute.delete('/:_id', requireLogin, checkPermissions(UserRole.ADMIN), locationController.deleteLocation);
 

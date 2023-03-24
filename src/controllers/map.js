@@ -11,6 +11,12 @@ const createMap = async (req, res) => {
     const { title, description, contact, openingTime, price } = req.body;
     logger.info(`[createMap]: req -> ${JSON.stringify(req.body)}`);
 
+    const existedTitle = await mapService.getMap({ title: title });
+    if (existedTitle) {
+      logger.debug(`[validationCreateMap]: title -> ${httpResponses.MAP_TITLE_ALREADY_EXISTS}`);
+      return res.badRequest(httpResponses.MAP_TITLE_ALREADY_EXISTS);
+    }
+
     const newMap = {
       title,
       description,
